@@ -16,3 +16,9 @@ To use, get azure-ebay-front EXTERNAL-IP with:
 -> kubectl get services
 
 and access using {EXTERNAL-IP}/SCC_EBay-1.0/
+
+Extras: the RedisCache.java file shows the changes made to the file as input for war file generation, relative to the 1st project.
+
+Keiko Kolin Tiago k.tiago@FCT.UNL.PT
+
+Thiago Araujo Monteiro tar.monteiro@FCT.UNL.PT
