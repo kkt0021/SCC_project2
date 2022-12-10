@@ -8,6 +8,10 @@ To build
 
 -> kubectl apply -f azure-vote.yaml
 
+
+
+
+
 To use, get azure-ebay-front EXTERNAL-IP with:
 
 -> kubectl get services
