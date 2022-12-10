@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: azure-vote-back # name of deployment
+spec:
+    replicas: 1 # number of replica of...
+    selector:
+        matchLabels:
+            app: azure-vote-back # ... app azure-vote-back
+    template:
+        metadata: # pod definition for
+            labels:
+                app: azure-vote-back # azure-vote-back
+        spec:
+            nodeSelector: # nodes to run the pod
+                "kubernetes.io/os": linux
+            containers: # containers to start
+            - name: azure-vote-back # name of the container
+              image: redis # image (from docker hub)
+              env: # environment variables for redis
+              - name: ALLOW_EMPTY_PASSWORD
+                value: "yes"
+              resources: # resources to assign
+                requests:
+                    cpu: 100m # 100 mili cpu (10% of cpu time)
+                    memory: 128Mi # 128 MB
+                limits:
+                    cpu: 250m
+                    memory: 256Mi
+              ports:
+              - containerPort: 6379 # port for accessing the container
+                name: redis
+---
+apiVersion: v1
+kind: Service # define a service
+metadata:
+    name: azure-vote-back # name to access the service
+    annotations:
+        service.beta.kubernetes.io/azure-load-balancer-resource-group: MC_scc2223-rg-westeurope-65013_my-scc2223-cluster-65013_westeurope
+spec:
+    loadBalancerIP: 20.23.195.199
+    type: LoadBalancer
+    ports:
+    - port: 6379 # port for the outside
+    selector:
+        app: azure-vote-back # app associated with the service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: azure-ebay-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-ebay-front
+  template:
+    metadata:
+      labels:
+        app: azure-ebay-front
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: azure-ebay-front
+        image: kkt0021/tiagothiago:scc
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: azure-ebay-front
+spec:
+    type: LoadBalancer # exposes the service using the
+    ports: # cloud load balancer
+    - port: 80 # port for the outside
+      targetPort: 8080 # port of the app/pods
+    selector:
+        app: azure-ebay-front
